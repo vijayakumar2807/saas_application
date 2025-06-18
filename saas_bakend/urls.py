@@ -14,6 +14,7 @@ router.register(r'roles',RoleViewSet)
 router.register(r'permissions',PermissionViewSet)
 # router.register(r'client-users', ClientUserCreateView,basename='client-users')
 
+
 urlpatterns = [
     # Admin URL
     path('admin/', admin.site.urls),
@@ -30,7 +31,8 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),            # user management
     path('auth/', include('djoser.urls.jwt')),        # JWT endpoints
 
-
+    #my subscriptions
+    path('my-subscriptions/', MySubscriptionView.as_view(), name='my-subscriptions'),
 
     path('', include(router.urls)),
 ]

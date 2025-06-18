@@ -38,20 +38,19 @@ class Client(models.Model):
 
 
 class CustomUserManager(BaseUserManager):
-    def create_user(self, email=None, phone=None, name='', password=None, **extra_fields):
+    def create_user(self, email=None, phone=None, password=None, **extra_fields):
         if not email and not phone:
             raise ValueError("User must have an email or phone number")
         email = self.normalize_email(email) if email else None
-        user = self.model(email=email, phone=phone, name=name, **extra_fields)
+        user = self.model(email=email, phone=phone, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, phone=None, name='', password=None, **extra_fields):
-        
+    def create_superuser(self, email, phone=None, password=None, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
-        return self.create_user(email=email, phone=phone, name=name, password=password, **extra_fields)
+        return self.create_user(email=email, phone=phone, password=password, **extra_fields)
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -81,7 +80,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['name']
+    REQUIRED_FIELDS = ['first_name']
 
     objects = CustomUserManager()
 

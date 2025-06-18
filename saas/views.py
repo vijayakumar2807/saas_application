@@ -117,7 +117,23 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         if user.is_superuser:
             return Subscription.objects.all()
         return Subscription.objects.filter(client=user.client)
+class MySubscriptionView(APIView):
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        user = request.user
+
+        if not hasattr(user, 'client') or user.client is None:
+            return Response({"detail": "User is not associated with any client."}, status=status.HTTP_400_BAD_REQUEST)
+
+        client = user.client
+        subscription = client.subscriptions.filter(status='active').order_by('-start_date').first()
+
+        if subscription:
+            serializer = SubscriptionSerializer(subscription)
+            return Response(serializer.data)
+        else:
+            return Response({"detail": "No active subscription found."}, status=status.HTTP_404_NOT_FOUND)
 class RoleViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = RoleSerializer
