@@ -23,16 +23,17 @@ class Client(models.Model):
             from django.contrib.auth import get_user_model
             User = get_user_model()
 
-            if self.contact_email and self.password:
-                if not User.objects.filter(email=self.contact_email).exists():
-                    user = User(
-                        email=self.contact_email,
-                        name=self.company_name,  # Assuming name = company_name
-                        client=self,
-                        is_staff=False
-                    )
-                    user.set_password(self.password)
-                    user.save()
+            if not User.objects.filter(email=self.contact_email).exists():
+                user = User(
+                    email=self.contact_email,
+                    client=self,
+                    is_staff=False,
+                    first_name=self.first_name,
+                    last_name=self.last_name,
+                )
+                user.set_password(self.password)
+                user.save()
+
 
 
 
@@ -57,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True, related_name='users')
     email = models.EmailField(unique=True, null=True, blank=True)
     phone = models.CharField(max_length=15, unique=True, null=True, blank=True)
-    name = models.CharField(max_length=100)
+    # name = models.CharField(max_length=100)
     first_name = models.CharField(max_length=50, null=True, blank=True)
     last_name = models.CharField(max_length=50, null=True, blank=True)
     is_active = models.BooleanField(default=True)
