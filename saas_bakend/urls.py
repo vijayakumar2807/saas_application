@@ -12,6 +12,8 @@ router.register(r'plans', PlanViewSet),
 router.register(r'subscription', SubscriptionViewSet)
 router.register(r'roles',RoleViewSet)
 router.register(r'permissions',PermissionViewSet)
+# router.register(r'client-users', ClientUserCreateView,basename='client-users')
+
 urlpatterns = [
     # Admin URL
     path('admin/', admin.site.urls),
@@ -20,6 +22,9 @@ urlpatterns = [
 
     #router login URLs
     path('api-auth/', include('rest_framework.urls')),
+
+    #create client
+    # path('create-client/', ClientRegistrationView.as_view(), name='create-client'),
 
     #Djoser URLs
     path('auth/', include('djoser.urls')),            # user management

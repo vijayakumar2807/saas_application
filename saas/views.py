@@ -2,17 +2,58 @@
 from rest_framework import viewsets, permissions,serializers
 from django.contrib.auth.models import Group, Permission
 from .models import Client, Lead, Plan, Subscription, User
-from .serializers import (
-    ClientSerializer, UserSerializer, LeadSerializer,
-    PlanSerializer, SubscriptionSerializer, RoleSerializer, PermissionSerializer
-)
+from .serializers import *
 from .permissions import DynamicModelPermission
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny
 from rest_framework.decorators import action
+from rest_framework import viewsets
+from rest_framework.views import APIView,Response,status
+from rest_framework.exceptions import PermissionDenied
+
+
+# class ClientUserCreateView(viewsets.ModelViewSet):
+#     serializer_class = UserSerializer
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     def get_queryset(self):
+#         return User.objects.filter(client=self.request.user.client)
+
+#     def perform_create(self, serializer):
+#         client = self.request.user.client
+
+#         try:
+#             subscription = Subscription.objects.filter(client=client, status='active').latest('start_date')
+#         except Subscription.DoesNotExist:
+#             raise PermissionDenied("No active subscription found.")
+
+#         user_limit = subscription.plan.user_limit
+#         current_user_count = User.objects.filter(client=client).count()
+
+#         if current_user_count >= user_limit:
+#             raise PermissionDenied(f"User limit reached ({user_limit}). Upgrade your plan.")
+
+#         serializer.save(client=client)
+
+# class ClientRegistrationView(APIView):
+#     authentication_classes = []
+#     permission_classes = []
+
+#     def post(self, request):
+#         serializer = ClientRegistrationSerializer(data=request.data)
+#         if serializer.is_valid():
+#             data = serializer.save()
+#             return Response(data, status=status.HTTP_201_CREATED)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+
+
+
+
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
-    permission_classes = [permissions.IsAuthenticated, DynamicModelPermission]
+    permission_classes = [AllowAny]
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
